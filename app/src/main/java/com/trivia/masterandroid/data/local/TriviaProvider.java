@@ -155,13 +155,4 @@ public class TriviaProvider extends ContentProvider {
             context.getContentResolver().notifyChange(uri, null);
         }
     }
-
-    @NonNull
-    private Context requireContext() {
-        Context context = getContext();
-        if (context == null) {
-            throw new IllegalStateException("Provider not attached");
-        }
-        return context;
-    }
 }

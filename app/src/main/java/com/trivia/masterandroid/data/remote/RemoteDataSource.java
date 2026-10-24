@@ -9,7 +9,6 @@ import com.trivia.masterandroid.util.HtmlUtil;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,7 +79,7 @@ public class RemoteDataSource {
                 throw new TriviaException(TriviaException.Type.SERVER);
             }
             return response.body();
-        } catch (SocketTimeoutException | InterruptedIOException e) {
+        } catch (InterruptedIOException e) {
             throw new TriviaException(TriviaException.Type.TIMEOUT, e);
         } catch (IOException e) {
             throw new TriviaException(TriviaException.Type.NO_CONNECTION, e);
