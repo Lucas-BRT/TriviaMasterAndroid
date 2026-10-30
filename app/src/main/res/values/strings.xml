@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Trivia Master Android</string>
+    <string name="app_tagline">Teste seus conhecimentos</string>
+    <string name="player_title">Quem vai jogar?</string>
+    <string name="player_hint">Seu nome</string>
+    <string name="player_error_empty">Digite seu nome para continuar</string>
+    <string name="player_error_long">Use no máximo 20 caracteres</string>
+    <string name="btn_play">Jogar</string>
+    <string name="btn_history">Histórico</string>
 </resources>
