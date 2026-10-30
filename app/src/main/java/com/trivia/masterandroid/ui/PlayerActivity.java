@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.trivia.masterandroid.R;
 import com.trivia.masterandroid.databinding.ActivityPlayerBinding;
 
 public class PlayerActivity extends AppCompatActivity {
@@ -38,15 +37,8 @@ public class PlayerActivity extends AppCompatActivity {
 
     private String validName() {
         String name = String.valueOf(binding.nameInput.getText()).trim();
-        if (name.isEmpty()) {
-            binding.nameLayout.setError(getString(R.string.player_error_empty));
-            return null;
-        }
-        if (name.length() > 20) {
-            binding.nameLayout.setError(getString(R.string.player_error_long));
-            return null;
-        }
-        binding.nameLayout.setError(null);
-        return name;
+        boolean empty = name.isEmpty();
+        binding.nameError.setVisibility(empty ? android.view.View.VISIBLE : android.view.View.GONE);
+        return empty ? null : name;
     }
 }
