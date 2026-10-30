@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#6C4DFF</color>
-    <color name="primary_dark">#4A2FD6</color>
-    <color name="accent">#FFC93C</color>
-    <color name="background">#F4F2FF</color>
+    <color name="paper">#FFF4DC</color>
     <color name="surface">#FFFFFF</color>
-    <color name="text_primary">#1F1B3A</color>
-    <color name="text_secondary">#6B6785</color>
-    <color name="correct">#2ECC71</color>
-    <color name="wrong">#E74C3C</color>
-    <color name="gradient_start">#7B5CFF</color>
-    <color name="gradient_end">#3B1FB8</color>
+    <color name="ink">#15120F</color>
+    <color name="ink_soft">#5E574D</color>
+    <color name="blue">#2F5BFF</color>
+    <color name="blue_dark">#1B3FD1</color>
+    <color name="sun">#FFD23F</color>
+    <color name="correct">#1FAF6B</color>
+    <color name="correct_bg">#D8F5E6</color>
+    <color name="wrong">#D62839</color>
+    <color name="wrong_bg">#FADADD</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>
