@@ -4,10 +4,13 @@ import android.content.Context;
 
 import com.trivia.masterandroid.data.local.LocalDataSource;
 import com.trivia.masterandroid.data.remote.RemoteDataSource;
+import com.trivia.masterandroid.data.remote.dto.CategoryDto;
+import com.trivia.masterandroid.model.Category;
 import com.trivia.masterandroid.model.GameSettings;
 import com.trivia.masterandroid.model.Question;
 import com.trivia.masterandroid.util.AppExecutors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,6 +52,21 @@ public class TriviaRepository {
                     }
                 }
                 AppExecutors.main(() -> callback.onError(e));
+            }
+        });
+    }
+
+    /** Falls back to a built-in list when the API cannot be reached. */
+    public void loadCategories(Callback<List<Category>> callback) {
+        AppExecutors.io(() -> {
+            try {
+                List<Category> list = new ArrayList<>();
+                for (CategoryDto dto : remote.fetchCategories()) {
+                    list.add(new Category(dto.id, dto.name));
+                }
+                AppExecutors.main(() -> callback.onSuccess(list, false));
+            } catch (TriviaException e) {
+                AppExecutors.main(() -> callback.onSuccess(DefaultCategories.get(), true));
             }
         });
     }
