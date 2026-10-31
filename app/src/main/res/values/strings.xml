@@ -7,4 +7,26 @@
     <string name="player_error_empty">Digite um nome para continuar.</string>
     <string name="btn_play">Escolher tema</string>
     <string name="btn_history">Ver histórico</string>
+    <string name="setup_greeting">Olá, %1$s</string>
+    <string name="setup_title">Monte sua partida</string>
+    <string name="setup_category">Tema</string>
+    <string name="setup_difficulty">Dificuldade</string>
+    <string name="setup_amount">Quantidade de perguntas</string>
+    <string name="setup_amount_value">%1$d perguntas</string>
+    <string name="setup_time_info">%1$d segundos por pergunta</string>
+    <string name="difficulty_any">Qualquer</string>
+    <string name="difficulty_easy">Fácil</string>
+    <string name="difficulty_medium">Médio</string>
+    <string name="difficulty_hard">Difícil</string>
+    <string name="btn_start">Começar partida</string>
+    <string name="loading_questions">Buscando perguntas…</string>
+    <string name="offline_banner">Sem conexão: usando perguntas salvas no aparelho.</string>
+    <string name="error_no_connection">Sem conexão e nenhuma pergunta salva ainda. Conecte-se à internet para baixar perguntas.</string>
+    <string name="error_timeout">A API demorou demais para responder. Tente novamente.</string>
+    <string name="error_server">O servidor de perguntas está indisponível. Tente novamente em instantes.</string>
+    <string name="error_no_results">Não há perguntas suficientes para esse filtro. Tente outro tema ou dificuldade.</string>
+    <string name="error_invalid_parameter">Configuração inválida. Revise a partida e tente de novo.</string>
+    <string name="error_rate_limit">Muitas requisições. Aguarde alguns segundos e tente de novo.</string>
+    <string name="error_parse">Não foi possível ler as perguntas recebidas.</string>
+    <string name="btn_retry">Tentar de novo</string>
 </resources>
