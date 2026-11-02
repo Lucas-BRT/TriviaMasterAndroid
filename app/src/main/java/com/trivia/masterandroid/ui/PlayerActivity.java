@@ -1,6 +1,7 @@
 package com.trivia.masterandroid.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -31,7 +32,7 @@ public class PlayerActivity extends AppCompatActivity {
                 return;
             }
             prefs.edit().putString(KEY_NAME, name).apply();
-            // Setup screen is added in a following step.
+            startActivity(new Intent(this, SetupActivity.class).putExtra(EXTRA_NAME, name));
         });
     }
 

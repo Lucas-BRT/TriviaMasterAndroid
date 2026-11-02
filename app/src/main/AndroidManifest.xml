@@ -27,6 +27,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.SetupActivity"
+            android:exported="false" />
+
         <provider
             android:name=".data.local.TriviaProvider"
             android:authorities="com.trivia.masterandroid.provider"
