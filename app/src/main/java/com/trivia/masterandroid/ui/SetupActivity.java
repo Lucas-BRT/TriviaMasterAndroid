@@ -70,14 +70,14 @@ public class SetupActivity extends AppCompatActivity {
             b.setId(View.generateViewId());
             b.setTag(DIFFICULTY_KEYS[i]);
             b.setText(DIFFICULTY_LABELS[i]);
-            b.setButton(null);
+            b.setButtonDrawable(null);
             b.setBackgroundResource(R.drawable.bg_chip);
             b.setTextColor(getColorStateList(R.color.chip_text));
             b.setTextSize(14);
             b.setGravity(android.view.Gravity.CENTER);
             b.setMinHeight(getResources().getDimensionPixelSize(R.dimen.chip_height));
             RadioGroup.LayoutParams lp = new RadioGroup.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
-            lp.setMarginEnd(i < DIFFICULTY_KEYS.length - 1 ? 8 : 0);
+            lp.setMarginEnd(i < DIFFICULTY_KEYS.length - 1 ? (int) (8 * getResources().getDisplayMetrics().density) : 0);
             binding.difficultyGroup.addView(b, lp);
             if (i == 0) {
                 binding.difficultyGroup.check(b.getId());
