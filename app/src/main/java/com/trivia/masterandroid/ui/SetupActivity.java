@@ -79,10 +79,8 @@ public class SetupActivity extends AppCompatActivity {
             RadioGroup.LayoutParams lp = new RadioGroup.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
             lp.setMarginEnd(i < DIFFICULTY_KEYS.length - 1 ? (int) (8 * getResources().getDisplayMetrics().density) : 0);
             binding.difficultyGroup.addView(b, lp);
-            if (i == 0) {
-                binding.difficultyGroup.check(b.getId());
-            }
         }
+        binding.difficultyGroup.check(binding.difficultyGroup.getChildAt(0).getId());
     }
 
     private void setupAmount() {

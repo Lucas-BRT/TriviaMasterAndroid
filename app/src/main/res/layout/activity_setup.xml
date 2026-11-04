@@ -49,15 +49,28 @@
                 android:layout_marginTop="28dp"
                 android:text="@string/setup_category" />
 
-            <Spinner
-                android:id="@+id/category_spinner"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_input"
-                android:contentDescription="@string/setup_category"
-                android:paddingHorizontal="8dp"
-                android:popupBackground="@color/surface" />
+                android:layout_marginTop="8dp">
+
+                <Spinner
+                    android:id="@+id/category_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_input"
+                    android:contentDescription="@string/setup_category"
+                    android:paddingHorizontal="8dp"
+                    android:popupBackground="@color/surface" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_marginEnd="16dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_chevron_down" />
+            </FrameLayout>
 
             <TextView
                 style="@style/Text.Label"
@@ -96,6 +109,8 @@
                 android:layout_marginTop="4dp"
                 android:contentDescription="@string/setup_amount"
                 android:max="15"
+                android:progressTint="@color/blue"
+                android:thumbTint="@color/ink"
                 android:progress="5" />
 
             <TextView
