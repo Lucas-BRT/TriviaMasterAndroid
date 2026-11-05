@@ -29,4 +29,19 @@
     <string name="error_rate_limit">Muitas requisições. Aguarde alguns segundos e tente de novo.</string>
     <string name="error_parse">Não foi possível ler as perguntas recebidas.</string>
     <string name="btn_retry">Tentar de novo</string>
+    <string name="quiz_progress">Pergunta %1$d de %2$d</string>
+    <string name="quiz_score">%1$d pts</string>
+    <string name="quiz_seconds">%1$ds</string>
+    <string name="quiz_correct">Correto! +%1$d pts</string>
+    <string name="quiz_wrong">Errado. Resposta certa: %1$s</string>
+    <string name="quiz_timeout">Tempo esgotado. Resposta certa: %1$s</string>
+    <string name="btn_next">Próxima</string>
+    <string name="btn_finish">Ver resultado</string>
+    <string name="quit_title">Abandonar a partida?</string>
+    <string name="quit_message">Seu progresso nesta partida será perdido.</string>
+    <string name="quit_confirm">Abandonar</string>
+    <string name="quit_cancel">Continuar jogando</string>
+    <string name="difficulty_label_easy">Fácil</string>
+    <string name="difficulty_label_medium">Médio</string>
+    <string name="difficulty_label_hard">Difícil</string>
 </resources>
