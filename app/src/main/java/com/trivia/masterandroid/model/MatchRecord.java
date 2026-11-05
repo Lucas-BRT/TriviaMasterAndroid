@@ -1,6 +1,6 @@
 package com.trivia.masterandroid.model;
 
-public class MatchRecord {
+public class MatchRecord implements java.io.Serializable {
 
     public long id;
     public long playerId;
