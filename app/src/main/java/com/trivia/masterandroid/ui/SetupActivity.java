@@ -1,5 +1,6 @@
 package com.trivia.masterandroid.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -145,8 +146,10 @@ public class SetupActivity extends AppCompatActivity {
             public void onSuccess(List<Question> result, boolean fromCache) {
                 setLoading(false);
                 binding.offlineBanner.setVisibility(fromCache ? View.VISIBLE : View.GONE);
-                // Quiz screen is added in a following step.
-                Toast.makeText(SetupActivity.this, result.size() + " perguntas carregadas", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(SetupActivity.this, QuizActivity.class)
+                        .putExtra(QuizActivity.EXTRA_QUESTIONS, new ArrayList<>(result))
+                        .putExtra(QuizActivity.EXTRA_SETTINGS, settings)
+                        .putExtra(QuizActivity.EXTRA_OFFLINE, fromCache));
             }
 
             @Override
