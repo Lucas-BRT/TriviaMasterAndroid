@@ -36,6 +36,11 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.ResultActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <provider
             android:name=".data.local.TriviaProvider"
             android:authorities="com.trivia.masterandroid.provider"

@@ -1,5 +1,6 @@
 package com.trivia.masterandroid.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -7,7 +8,6 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
@@ -218,8 +218,9 @@ public class QuizActivity extends AppCompatActivity {
             }
             local.saveMatch(m);
         });
-        // Result screen is added in a following step.
-        Toast.makeText(this, getString(R.string.quiz_score, score), Toast.LENGTH_LONG).show();
+        startActivity(new Intent(this, ResultActivity.class)
+                .putExtra(ResultActivity.EXTRA_MATCH, m)
+                .putExtra(ResultActivity.EXTRA_ANSWERS, new ArrayList<>(answers)));
         finish();
     }
 
