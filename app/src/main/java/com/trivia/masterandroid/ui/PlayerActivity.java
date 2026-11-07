@@ -26,6 +26,9 @@ public class PlayerActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         binding.nameInput.setText(prefs.getString(KEY_NAME, ""));
 
+        binding.btnHistory.setOnClickListener(v ->
+                startActivity(new Intent(this, HistoryActivity.class)));
+
         binding.btnPlay.setOnClickListener(v -> {
             String name = validName();
             if (name == null) {
