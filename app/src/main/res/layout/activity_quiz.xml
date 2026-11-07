@@ -106,6 +106,7 @@
             android:id="@+id/feedback_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/ink"
             android:fontFamily="sans-serif-black"
             android:textSize="17sp"
             android:accessibilityLiveRegion="polite" />
