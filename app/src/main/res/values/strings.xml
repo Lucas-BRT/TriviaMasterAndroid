@@ -44,4 +44,17 @@
     <string name="difficulty_label_easy">Fácil</string>
     <string name="difficulty_label_medium">Médio</string>
     <string name="difficulty_label_hard">Difícil</string>
+    <string name="result_title">Fim de jogo</string>
+    <string name="result_points_label">Pontuação final</string>
+    <string name="result_correct_label">Acertos</string>
+    <string name="result_accuracy_label">Aproveitamento</string>
+    <string name="result_value_of">%1$d de %2$d</string>
+    <string name="result_percent">%1$d%%</string>
+    <string name="result_offline">Partida com perguntas salvas (offline)</string>
+    <string name="result_review">Revisão das respostas</string>
+    <string name="answer_yours">Você: %1$s</string>
+    <string name="answer_none">Sem resposta (tempo esgotado)</string>
+    <string name="answer_right">Certa: %1$s</string>
+    <string name="btn_play_again">Jogar de novo</string>
+    <string name="btn_home">Início</string>
 </resources>
