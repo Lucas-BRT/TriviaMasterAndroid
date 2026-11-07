@@ -57,4 +57,14 @@
     <string name="answer_right">Certa: %1$s</string>
     <string name="btn_play_again">Jogar de novo</string>
     <string name="btn_home">Início</string>
+    <string name="history_title">Histórico</string>
+    <string name="history_matches">Partidas</string>
+    <string name="history_best">Melhor</string>
+    <string name="history_average">Média</string>
+    <string name="history_empty_title">Nenhuma partida ainda</string>
+    <string name="history_empty_body">Jogue uma partida e o resultado aparece aqui.</string>
+    <string name="history_item_meta">%1$s · %2$s</string>
+    <string name="history_item_detail">%1$d de %2$d acertos · %3$s</string>
+    <string name="history_offline_tag">offline</string>
+    <string name="difficulty_label_any">Qualquer</string>
 </resources>
