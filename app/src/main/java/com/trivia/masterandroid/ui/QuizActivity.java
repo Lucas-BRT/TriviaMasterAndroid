@@ -17,6 +17,7 @@ import com.trivia.masterandroid.R;
 import com.trivia.masterandroid.data.local.LocalDataSource;
 import com.trivia.masterandroid.databinding.ActivityQuizBinding;
 import com.trivia.masterandroid.model.AnswerRecord;
+import com.trivia.masterandroid.receiver.MatchFinishedReceiver;
 import com.trivia.masterandroid.model.GameSettings;
 import com.trivia.masterandroid.model.MatchRecord;
 import com.trivia.masterandroid.model.Question;
@@ -218,6 +219,7 @@ public class QuizActivity extends AppCompatActivity {
             }
             local.saveMatch(m);
         });
+        sendBroadcast(new Intent(MatchFinishedReceiver.ACTION_MATCH_FINISHED).setPackage(getPackageName()));
         startActivity(new Intent(this, ResultActivity.class)
                 .putExtra(ResultActivity.EXTRA_MATCH, m)
                 .putExtra(ResultActivity.EXTRA_ANSWERS, new ArrayList<>(answers)));

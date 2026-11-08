@@ -46,6 +46,18 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <service
+            android:name=".service.QuestionPrefetchService"
+            android:exported="false" />
+
+        <receiver
+            android:name=".receiver.MatchFinishedReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.trivia.masterandroid.ACTION_MATCH_FINISHED" />
+            </intent-filter>
+        </receiver>
+
         <provider
             android:name=".data.local.TriviaProvider"
             android:authorities="com.trivia.masterandroid.provider"
