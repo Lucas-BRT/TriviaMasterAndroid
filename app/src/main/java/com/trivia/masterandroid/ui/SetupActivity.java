@@ -1,6 +1,8 @@
 package com.trivia.masterandroid.ui;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import com.trivia.masterandroid.databinding.ActivitySetupBinding;
 import com.trivia.masterandroid.model.Category;
 import com.trivia.masterandroid.model.GameSettings;
 import com.trivia.masterandroid.model.Question;
+import com.trivia.masterandroid.receiver.NetworkReceiver;
 import com.trivia.masterandroid.util.AppExecutors;
 import com.trivia.masterandroid.util.ErrorMessages;
 
@@ -40,6 +43,7 @@ public class SetupActivity extends AppCompatActivity {
     private String playerName;
     private long playerId = -1;
     private boolean starting;
+    private NetworkReceiver networkReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +62,24 @@ public class SetupActivity extends AppCompatActivity {
         registerPlayer();
 
         binding.btnStart.setOnClickListener(v -> startGame());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        networkReceiver = new NetworkReceiver(online ->
+                binding.offlineBanner.setVisibility(online ? View.GONE : View.VISIBLE));
+        registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        binding.offlineBanner.setVisibility(NetworkReceiver.isOnline(this) ? View.GONE : View.VISIBLE);
+    }
+
+    @Override
+    protected void onStop() {
+        if (networkReceiver != null) {
+            unregisterReceiver(networkReceiver);
+            networkReceiver = null;
+        }
+        super.onStop();
     }
 
     private void registerPlayer() {
@@ -107,7 +129,7 @@ public class SetupActivity extends AppCompatActivity {
     }
 
     private void loadCategories() {
-        categories.add(new Category(0, getString(R.string.difficulty_any)));
+        categories.add(new Category(0, getString(R.string.category_any)));
         binding.categorySpinner.setAdapter(adapterFor(categories));
         repository.loadCategories(new TriviaRepository.Callback<List<Category>>() {
             @Override

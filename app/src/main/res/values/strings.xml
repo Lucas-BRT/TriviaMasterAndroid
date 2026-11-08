@@ -14,6 +14,7 @@
     <string name="setup_amount">Quantidade de perguntas</string>
     <string name="setup_amount_value">%1$d perguntas</string>
     <string name="setup_time_info">%1$d segundos por pergunta</string>
+    <string name="category_any">Todos os temas</string>
     <string name="difficulty_any">Qualquer</string>
     <string name="difficulty_easy">Fácil</string>
     <string name="difficulty_medium">Médio</string>
