@@ -10,8 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
-import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.trivia.masterandroid.R;
@@ -177,7 +177,11 @@ public class SetupActivity extends AppCompatActivity {
             @Override
             public void onError(TriviaException error) {
                 setLoading(false);
-                Toast.makeText(SetupActivity.this, ErrorMessages.of(error), Toast.LENGTH_LONG).show();
+                new AlertDialog.Builder(SetupActivity.this)
+                        .setMessage(ErrorMessages.of(error))
+                        .setPositiveButton(R.string.btn_retry, (d, w) -> startGame())
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .show();
             }
         });
     }
