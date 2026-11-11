@@ -17,9 +17,9 @@ public final class RetrofitClient {
     public static synchronized OpenTdbApi getApi() {
         if (api == null) {
             OkHttpClient client = new OkHttpClient.Builder()
-                    .connectTimeout(10, TimeUnit.SECONDS)
-                    .readTimeout(10, TimeUnit.SECONDS)
-                    .writeTimeout(10, TimeUnit.SECONDS)
+                    .connectTimeout(8, TimeUnit.SECONDS)
+                    .readTimeout(8, TimeUnit.SECONDS)
+                    .writeTimeout(8, TimeUnit.SECONDS)
                     .build();
             api = new Retrofit.Builder()
                     .baseUrl(BASE_URL)

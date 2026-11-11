@@ -9,6 +9,7 @@
         android:fillViewport="true">
 
         <LinearLayout
+        android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -157,5 +158,24 @@
                 android:text="@string/loading_questions"
                 android:textSize="32sp" />
         </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <TextView
+            android:id="@+id/loading_hint"
+            style="@style/Text.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:alpha="0"
+            android:text="@string/loading_slow" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_cancel_loading"
+            style="@style/Button.Secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="4dp"
+            android:paddingHorizontal="32dp"
+            android:text="@string/btn_cancel" />
     </LinearLayout>
 </FrameLayout>

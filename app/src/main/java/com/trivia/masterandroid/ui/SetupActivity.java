@@ -18,6 +18,7 @@ import com.trivia.masterandroid.R;
 import com.trivia.masterandroid.data.local.LocalDataSource;
 import com.trivia.masterandroid.data.repo.TriviaException;
 import com.trivia.masterandroid.data.repo.TriviaRepository;
+import com.trivia.masterandroid.util.SystemBars;
 import com.trivia.masterandroid.databinding.ActivitySetupBinding;
 import com.trivia.masterandroid.model.Category;
 import com.trivia.masterandroid.model.GameSettings;
@@ -43,6 +44,8 @@ public class SetupActivity extends AppCompatActivity {
     private String playerName;
     private long playerId = -1;
     private boolean starting;
+    private int loadToken;
+    private final android.os.Handler hintHandler = new android.os.Handler(android.os.Looper.getMainLooper());
     private NetworkReceiver networkReceiver;
 
     @Override
@@ -50,6 +53,8 @@ public class SetupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivitySetupBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        SystemBars.enable(this);
+        SystemBars.pad(binding.content, true, true);
         repository = new TriviaRepository(this);
 
         playerName = getIntent().getStringExtra(PlayerActivity.EXTRA_NAME);
@@ -62,6 +67,10 @@ public class SetupActivity extends AppCompatActivity {
         registerPlayer();
 
         binding.btnStart.setOnClickListener(v -> startGame());
+        binding.btnCancelLoading.setOnClickListener(v -> {
+            loadToken++;
+            setLoading(false);
+        });
     }
 
     @Override
@@ -71,6 +80,12 @@ public class SetupActivity extends AppCompatActivity {
                 binding.offlineBanner.setVisibility(online ? View.GONE : View.VISIBLE));
         registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         binding.offlineBanner.setVisibility(NetworkReceiver.isOnline(this) ? View.GONE : View.VISIBLE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        hintHandler.removeCallbacksAndMessages(null);
+        super.onDestroy();
     }
 
     @Override
@@ -163,9 +178,13 @@ public class SetupActivity extends AppCompatActivity {
         GameSettings settings = new GameSettings(playerName, playerId, category.id, category.name, difficulty, amount);
 
         setLoading(true);
+        final int token = ++loadToken;
         repository.loadQuestions(settings, new TriviaRepository.Callback<List<Question>>() {
             @Override
             public void onSuccess(List<Question> result, boolean fromCache) {
+                if (token != loadToken || isFinishing()) {
+                    return;
+                }
                 setLoading(false);
                 binding.offlineBanner.setVisibility(fromCache ? View.VISIBLE : View.GONE);
                 startActivity(new Intent(SetupActivity.this, QuizActivity.class)
@@ -176,6 +195,9 @@ public class SetupActivity extends AppCompatActivity {
 
             @Override
             public void onError(TriviaException error) {
+                if (token != loadToken || isFinishing()) {
+                    return;
+                }
                 setLoading(false);
                 new AlertDialog.Builder(SetupActivity.this)
                         .setMessage(ErrorMessages.of(error))
@@ -189,8 +211,11 @@ public class SetupActivity extends AppCompatActivity {
     private void setLoading(boolean loading) {
         starting = loading;
         binding.loading.setVisibility(loading ? View.VISIBLE : View.GONE);
+        hintHandler.removeCallbacksAndMessages(null);
+        binding.loadingHint.setAlpha(0f);
         if (loading) {
             binding.shimmer.startShimmer();
+            hintHandler.postDelayed(() -> binding.loadingHint.animate().alpha(1f).setDuration(300).start(), 4000);
         } else {
             binding.shimmer.stopShimmer();
         }

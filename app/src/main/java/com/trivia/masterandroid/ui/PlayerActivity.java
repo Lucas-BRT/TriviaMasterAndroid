@@ -4,9 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.trivia.masterandroid.util.SystemBars;
 import com.trivia.masterandroid.databinding.ActivityPlayerBinding;
 
 public class PlayerActivity extends AppCompatActivity {
@@ -22,6 +25,8 @@ public class PlayerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityPlayerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        SystemBars.enable(this);
+        SystemBars.pad(binding.content, true, true);
 
         SharedPreferences prefs = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         binding.nameInput.setText(prefs.getString(KEY_NAME, ""));
@@ -29,12 +34,22 @@ public class PlayerActivity extends AppCompatActivity {
         binding.btnHistory.setOnClickListener(v ->
                 startActivity(new Intent(this, HistoryActivity.class)));
 
+        binding.nameInput.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                binding.btnPlay.performClick();
+                return true;
+            }
+            return false;
+        });
+
         binding.btnPlay.setOnClickListener(v -> {
             String name = validName();
             if (name == null) {
                 return;
             }
             prefs.edit().putString(KEY_NAME, name).apply();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(binding.nameInput.getWindowToken(), 0);
             startActivity(new Intent(this, SetupActivity.class).putExtra(EXTRA_NAME, name));
         });
     }
