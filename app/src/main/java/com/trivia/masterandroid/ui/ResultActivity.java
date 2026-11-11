@@ -1,14 +1,17 @@
 package com.trivia.masterandroid.ui;
 
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.trivia.masterandroid.R;
+import com.trivia.masterandroid.util.SystemBars;
 import com.trivia.masterandroid.databinding.ActivityResultBinding;
 import com.trivia.masterandroid.model.AnswerRecord;
 import com.trivia.masterandroid.model.MatchRecord;
@@ -34,6 +37,8 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ActivityResultBinding binding = ActivityResultBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        SystemBars.enable(this);
+        SystemBars.pad(binding.content, true, true);
 
         MatchRecord match = (MatchRecord) getIntent().getSerializableExtra(EXTRA_MATCH);
         List<AnswerRecord> answers = (List<AnswerRecord>) getIntent().getSerializableExtra(EXTRA_ANSWERS);
@@ -43,7 +48,15 @@ public class ResultActivity extends AppCompatActivity {
         }
 
         int percent = match.total == 0 ? 0 : Math.round(match.correct * 100f / match.total);
-        binding.scoreBig.setText(String.valueOf(match.score));
+        if (animationsEnabled() && match.score > 0) {
+            ValueAnimator counter = ValueAnimator.ofInt(0, match.score);
+            counter.setDuration(Math.min(1200, 400 + match.score * 8L));
+            counter.setInterpolator(new DecelerateInterpolator());
+            counter.addUpdateListener(a -> binding.scoreBig.setText(String.valueOf(a.getAnimatedValue())));
+            counter.start();
+        } else {
+            binding.scoreBig.setText(String.valueOf(match.score));
+        }
         binding.correctValue.setText(getString(R.string.result_value_of, match.correct, match.total));
         binding.accuracyValue.setText(getString(R.string.result_percent, percent));
         binding.offlineBadge.setVisibility(match.offline ? View.VISIBLE : View.GONE);

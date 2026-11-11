@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.trivia.masterandroid.data.local.LocalDataSource;
+import com.trivia.masterandroid.util.SystemBars;
 import com.trivia.masterandroid.databinding.ActivityHistoryBinding;
 import com.trivia.masterandroid.model.MatchRecord;
 import com.trivia.masterandroid.util.AppExecutors;
@@ -22,6 +23,9 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityHistoryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        SystemBars.enable(this);
+        SystemBars.pad(binding.root, true, false);
+        SystemBars.pad(binding.list, false, true);
         binding.list.setLayoutManager(new LinearLayoutManager(this));
 
         LocalDataSource local = new LocalDataSource(this);
@@ -52,5 +56,6 @@ public class HistoryActivity extends AppCompatActivity {
         binding.statBest.setText(String.valueOf(best));
         binding.statAvg.setText(String.valueOf(Math.round(sum / (float) matches.size())));
         binding.list.setAdapter(new MatchAdapter(matches));
+        binding.list.scheduleLayoutAnimation();
     }
 }

@@ -1,12 +1,15 @@
 package com.trivia.masterandroid.ui;
 
 import android.content.Intent;
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
@@ -15,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.trivia.masterandroid.R;
 import com.trivia.masterandroid.data.local.LocalDataSource;
+import com.trivia.masterandroid.util.SystemBars;
 import com.trivia.masterandroid.databinding.ActivityQuizBinding;
 import com.trivia.masterandroid.model.AnswerRecord;
 import com.trivia.masterandroid.receiver.MatchFinishedReceiver;
@@ -51,6 +55,7 @@ public class QuizActivity extends AppCompatActivity {
     private int correctCount;
     private long timeLeftMs;
     private boolean answered;
+    private int lastSecond = -1;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -58,6 +63,9 @@ public class QuizActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityQuizBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        SystemBars.enable(this);
+        SystemBars.pad(binding.content, true, false);
+        SystemBars.pad(binding.feedbackBar, false, true);
 
         settings = (GameSettings) getIntent().getSerializableExtra(EXTRA_SETTINGS);
         questions = (List<Question>) getIntent().getSerializableExtra(EXTRA_QUESTIONS);
@@ -84,7 +92,9 @@ public class QuizActivity extends AppCompatActivity {
         binding.scoreLabel.setText(getString(R.string.quiz_score, score));
         binding.metaLabel.setText(q.category + " · " + difficultyLabel(q.difficulty));
         binding.questionText.setText(q.text);
+        binding.feedbackBar.animate().cancel();
         binding.feedbackBar.setVisibility(View.INVISIBLE);
+        lastSecond = -1;
 
         binding.options.removeAllViews();
         optionViews.clear();
@@ -98,6 +108,7 @@ public class QuizActivity extends AppCompatActivity {
             binding.options.addView(row);
             optionViews.add(row);
         }
+        animateQuestionIn();
         startTimer();
     }
 
@@ -127,6 +138,13 @@ public class QuizActivity extends AppCompatActivity {
         binding.timerText.setText(getString(R.string.quiz_seconds, seconds));
         boolean urgent = seconds <= 5;
         binding.timerBar.setProgressColor(getColor(urgent ? R.color.wrong : R.color.blue));
+        if (urgent && seconds != lastSecond && seconds > 0 && !answered) {
+            binding.timerText.animate().cancel();
+            binding.timerText.animate().scaleX(1.18f).scaleY(1.18f).setDuration(110)
+                    .withEndAction(() -> binding.timerText.animate().scaleX(1f).scaleY(1f).setDuration(160).start())
+                    .start();
+        }
+        lastSecond = seconds;
     }
 
     private void onAnswer(String chosen) {
@@ -173,11 +191,13 @@ public class QuizActivity extends AppCompatActivity {
                 mark.setText("✓");
                 mark.setTextColor(getColor(R.color.correct));
                 mark.setVisibility(View.VISIBLE);
+                pop(row);
             } else if (option.equals(chosen)) {
                 row.setBackgroundResource(R.drawable.bg_option_wrong);
                 mark.setText("✗");
                 mark.setTextColor(getColor(R.color.wrong));
                 mark.setVisibility(View.VISIBLE);
+                shake(row);
             }
         }
         binding.scoreLabel.setText(getString(R.string.quiz_score, score));
@@ -188,7 +208,41 @@ public class QuizActivity extends AppCompatActivity {
         binding.feedbackBar.setBackgroundResource(R.color.surface);
         binding.feedbackBar.setBackgroundColor(getColor(correct ? R.color.correct_bg : R.color.wrong_bg));
         binding.btnNext.setText(index == questions.size() - 1 ? R.string.btn_finish : R.string.btn_next);
+        float dp = getResources().getDisplayMetrics().density;
+        binding.feedbackBar.setTranslationY(240 * dp);
         binding.feedbackBar.setVisibility(View.VISIBLE);
+        binding.feedbackBar.animate().translationY(0).setDuration(240)
+                .setInterpolator(new DecelerateInterpolator()).start();
+        binding.feedbackBar.performHapticFeedback(correct
+                ? (android.os.Build.VERSION.SDK_INT >= 30 ? HapticFeedbackConstants.CONFIRM : HapticFeedbackConstants.KEYBOARD_TAP)
+                : (android.os.Build.VERSION.SDK_INT >= 30 ? HapticFeedbackConstants.REJECT : HapticFeedbackConstants.LONG_PRESS));
+    }
+
+    private void animateQuestionIn() {
+        float dp = getResources().getDisplayMetrics().density;
+        binding.questionText.setAlpha(0f);
+        binding.questionText.setTranslationY(12 * dp);
+        binding.questionText.animate().alpha(1f).translationY(0).setDuration(220)
+                .setInterpolator(new DecelerateInterpolator()).start();
+        for (int i = 0; i < optionViews.size(); i++) {
+            View row = optionViews.get(i);
+            row.setAlpha(0f);
+            row.setTranslationY(20 * dp);
+            row.animate().alpha(1f).translationY(0).setStartDelay(70 + i * 60L).setDuration(220)
+                    .setInterpolator(new DecelerateInterpolator()).start();
+        }
+    }
+
+    private void pop(View row) {
+        row.animate().scaleX(1.03f).scaleY(1.03f).setDuration(120)
+                .withEndAction(() -> row.animate().scaleX(1f).scaleY(1f).setDuration(140).start())
+                .start();
+    }
+
+    private void shake(View row) {
+        float dp = getResources().getDisplayMetrics().density;
+        ObjectAnimator.ofFloat(row, View.TRANSLATION_X, 0, -10 * dp, 10 * dp, -7 * dp, 7 * dp, 0)
+                .setDuration(360).start();
     }
 
     private void next() {
