@@ -12,6 +12,14 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:textColorPrimary">@color/ink</item>
         <item name="android:textColorSecondary">@color/ink_soft</item>
+        <item name="android:windowAnimationStyle">@style/Animation.Trivia</item>
+    </style>
+
+    <style name="Animation.Trivia" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/screen_enter</item>
+        <item name="android:activityOpenExitAnimation">@anim/screen_exit</item>
+        <item name="android:activityCloseEnterAnimation">@anim/screen_pop_enter</item>
+        <item name="android:activityCloseExitAnimation">@anim/screen_pop_exit</item>
     </style>
 
     <style name="Text.Display" parent="">
