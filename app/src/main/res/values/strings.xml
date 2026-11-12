@@ -68,4 +68,6 @@
     <string name="history_item_detail">%1$d de %2$d acertos · %3$s</string>
     <string name="history_offline_tag">offline</string>
     <string name="difficulty_label_any">Qualquer</string>
+    <string name="loading_slow">Isso está demorando mais que o normal…</string>
+    <string name="btn_cancel">Cancelar</string>
 </resources>
