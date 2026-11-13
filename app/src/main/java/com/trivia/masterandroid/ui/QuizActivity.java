@@ -56,6 +56,7 @@ public class QuizActivity extends AppCompatActivity {
     private long timeLeftMs;
     private boolean answered;
     private int lastSecond = -1;
+    private boolean advancePending;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -113,10 +114,15 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void startTimer() {
-        cancelTimer();
         timeLeftMs = LIMIT_MS;
+        runTimer();
+    }
+
+    /** Runs the countdown from the time still left, so it can resume after a pause. */
+    private void runTimer() {
+        cancelTimer();
         updateTimer();
-        timer = new CountDownTimer(LIMIT_MS, 100) {
+        timer = new CountDownTimer(timeLeftMs, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeftMs = millisUntilFinished;
@@ -177,6 +183,7 @@ public class QuizActivity extends AppCompatActivity {
         answers.add(new AnswerRecord(q.text, null, q.correctAnswer, false, true, 0));
         reveal(q, null);
         showFeedback(getString(R.string.quiz_timeout, q.correctAnswer), false);
+        advancePending = true;
         handler.postDelayed(this::next, TIMEOUT_ADVANCE_MS);
     }
 
@@ -247,6 +254,7 @@ public class QuizActivity extends AppCompatActivity {
 
     private void next() {
         handler.removeCallbacksAndMessages(null);
+        advancePending = false;
         if (index >= questions.size() - 1) {
             finishMatch();
             return;
@@ -303,6 +311,27 @@ public class QuizActivity extends AppCompatActivity {
         if (timer != null) {
             timer.cancel();
             timer = null;
+        }
+    }
+
+    /** The clock must not run while the app is in the background (call, notification, home). */
+    @Override
+    protected void onPause() {
+        cancelTimer();
+        handler.removeCallbacksAndMessages(null);
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isFinishing() || questions == null) {
+            return;
+        }
+        if (!answered && timer == null && timeLeftMs > 0) {
+            runTimer();
+        } else if (answered && advancePending) {
+            handler.postDelayed(this::next, 1500);
         }
     }
 
