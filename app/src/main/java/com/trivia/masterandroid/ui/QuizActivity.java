@@ -13,7 +13,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.trivia.masterandroid.R;
@@ -26,6 +25,7 @@ import com.trivia.masterandroid.model.GameSettings;
 import com.trivia.masterandroid.model.MatchRecord;
 import com.trivia.masterandroid.model.Question;
 import com.trivia.masterandroid.util.AppExecutors;
+import com.trivia.masterandroid.util.Dialogs;
 import com.trivia.masterandroid.util.ScoreCalculator;
 
 import java.util.ArrayList;
@@ -289,12 +289,8 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void confirmQuit() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.quit_title)
-                .setMessage(R.string.quit_message)
-                .setPositiveButton(R.string.quit_confirm, (d, w) -> finish())
-                .setNegativeButton(R.string.quit_cancel, null)
-                .show();
+        Dialogs.confirm(this, R.string.quit_title, R.string.quit_message,
+                R.string.quit_confirm, this::finish, R.string.quit_cancel);
     }
 
     private String difficultyLabel(String d) {

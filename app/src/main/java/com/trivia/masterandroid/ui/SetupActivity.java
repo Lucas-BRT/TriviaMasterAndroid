@@ -11,7 +11,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.trivia.masterandroid.R;
@@ -25,6 +24,7 @@ import com.trivia.masterandroid.model.GameSettings;
 import com.trivia.masterandroid.model.Question;
 import com.trivia.masterandroid.receiver.NetworkReceiver;
 import com.trivia.masterandroid.util.AppExecutors;
+import com.trivia.masterandroid.util.Dialogs;
 import com.trivia.masterandroid.util.ErrorMessages;
 
 import java.util.ArrayList;
@@ -199,11 +199,8 @@ public class SetupActivity extends AppCompatActivity {
                     return;
                 }
                 setLoading(false);
-                new AlertDialog.Builder(SetupActivity.this)
-                        .setMessage(ErrorMessages.of(error))
-                        .setPositiveButton(R.string.btn_retry, (d, w) -> startGame())
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .show();
+                Dialogs.confirm(SetupActivity.this, 0, ErrorMessages.of(error),
+                        R.string.btn_retry, () -> startGame(), R.string.btn_cancel);
             }
         });
     }
