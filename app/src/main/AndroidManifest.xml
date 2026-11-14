@@ -19,7 +19,7 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:label="@string/app_name"
-            android:theme="@style/Theme.TriviaMasterAndroid"
+            android:theme="@style/Theme.TriviaMasterAndroid.Starting"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

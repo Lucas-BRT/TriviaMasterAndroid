@@ -15,6 +15,13 @@
         <item name="android:windowAnimationStyle">@style/Animation.Trivia</item>
     </style>
 
+    <style name="Theme.TriviaMasterAndroid.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/paper</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/sun</item>
+        <item name="postSplashScreenTheme">@style/Theme.TriviaMasterAndroid</item>
+    </style>
+
     <style name="Animation.Trivia" parent="@android:style/Animation.Activity">
         <item name="android:activityOpenEnterAnimation">@anim/screen_enter</item>
         <item name="android:activityOpenExitAnimation">@anim/screen_exit</item>

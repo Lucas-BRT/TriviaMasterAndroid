@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.round.corner.progress)
     implementation(libs.konfetti)
     implementation(libs.shimmer)
+    implementation(libs.androidx.core.splashscreen)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

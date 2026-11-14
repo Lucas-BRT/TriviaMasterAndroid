@@ -11,6 +11,7 @@ okhttp = "4.12.0"
 roundCornerProgress = "2.2.1"
 konfetti = "2.0.4"
 shimmer = "0.5.0"
+splashscreen = "1.0.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -25,6 +26,7 @@ okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhtt
 round-corner-progress = { group = "com.akexorcist", name = "round-corner-progress-bar", version.ref = "roundCornerProgress" }
 konfetti = { group = "nl.dionsegijn", name = "konfetti-xml", version.ref = "konfetti" }
 shimmer = { group = "com.facebook.shimmer", name = "shimmer", version.ref = "shimmer" }
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
