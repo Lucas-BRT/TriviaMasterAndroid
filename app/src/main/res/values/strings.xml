@@ -70,4 +70,8 @@
     <string name="difficulty_label_any">Qualquer</string>
     <string name="loading_slow">Isso está demorando mais que o normal…</string>
     <string name="btn_cancel">Cancelar</string>
+    <string name="result_record">★ Novo recorde!</string>
+    <string name="result_msg_great">Mandou muito bem!</string>
+    <string name="result_msg_good">Bom jogo!</string>
+    <string name="result_msg_try">Na próxima vai melhor.</string>
 </resources>

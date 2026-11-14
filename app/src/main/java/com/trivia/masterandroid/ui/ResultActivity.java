@@ -13,8 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.trivia.masterandroid.R;
 import com.trivia.masterandroid.util.SystemBars;
 import com.trivia.masterandroid.databinding.ActivityResultBinding;
+import com.trivia.masterandroid.data.local.LocalDataSource;
 import com.trivia.masterandroid.model.AnswerRecord;
 import com.trivia.masterandroid.model.MatchRecord;
+import com.trivia.masterandroid.util.AppExecutors;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +40,8 @@ public class ResultActivity extends AppCompatActivity {
         ActivityResultBinding binding = ActivityResultBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         SystemBars.enable(this);
-        SystemBars.pad(binding.content, true, true);
+        SystemBars.pad(binding.content, true, false);
+        SystemBars.pad(binding.actionBar, false, true);
 
         MatchRecord match = (MatchRecord) getIntent().getSerializableExtra(EXTRA_MATCH);
         List<AnswerRecord> answers = (List<AnswerRecord>) getIntent().getSerializableExtra(EXTRA_ANSWERS);
@@ -60,6 +63,9 @@ public class ResultActivity extends AppCompatActivity {
         binding.correctValue.setText(getString(R.string.result_value_of, match.correct, match.total));
         binding.accuracyValue.setText(getString(R.string.result_percent, percent));
         binding.offlineBadge.setVisibility(match.offline ? View.VISIBLE : View.GONE);
+        binding.resultMessage.setText(percent >= 80 ? R.string.result_msg_great
+                : percent >= 50 ? R.string.result_msg_good : R.string.result_msg_try);
+        showRecordIfBest(binding, match);
 
         binding.answers.setLayoutManager(new LinearLayoutManager(this));
         binding.answers.setAdapter(new AnswerAdapter(new ArrayList<>(answers)));
@@ -78,6 +84,25 @@ public class ResultActivity extends AppCompatActivity {
         if (percent >= 60 && animationsEnabled()) {
             celebrate(binding);
         }
+    }
+
+    /** "New record" only when there are earlier matches and this one beats all of them. */
+    private void showRecordIfBest(ActivityResultBinding binding, MatchRecord match) {
+        LocalDataSource local = new LocalDataSource(this);
+        AppExecutors.io(() -> {
+            int previousBest = -1;
+            for (MatchRecord m : local.getMatches()) {
+                if (m.playedAt != match.playedAt) {
+                    previousBest = Math.max(previousBest, m.score);
+                }
+            }
+            boolean record = previousBest >= 0 && match.score > previousBest;
+            AppExecutors.main(() -> {
+                if (!isFinishing() && !isDestroyed() && record) {
+                    binding.recordBadge.setVisibility(View.VISIBLE);
+                }
+            });
+        });
     }
 
     private boolean animationsEnabled() {
