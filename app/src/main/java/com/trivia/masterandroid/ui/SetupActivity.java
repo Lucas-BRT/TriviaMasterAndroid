@@ -2,17 +2,22 @@ package com.trivia.masterandroid.ui;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.trivia.masterandroid.R;
 import com.trivia.masterandroid.data.local.LocalDataSource;
 import com.trivia.masterandroid.data.repo.TriviaException;
@@ -41,6 +46,8 @@ public class SetupActivity extends AppCompatActivity {
     private ActivitySetupBinding binding;
     private TriviaRepository repository;
     private final List<Category> categories = new ArrayList<>();
+    private Category selectedCategory;
+    private CategoryAdapter pickerAdapter;
     private String playerName;
     private long playerId = -1;
     private boolean starting;
@@ -145,12 +152,15 @@ public class SetupActivity extends AppCompatActivity {
 
     private void loadCategories() {
         categories.add(new Category(0, getString(R.string.category_any)));
-        binding.categorySpinner.setAdapter(adapterFor(categories));
+        selectCategory(categories.get(0));
+        binding.categoryField.setOnClickListener(v -> showCategoryPicker());
         repository.loadCategories(new TriviaRepository.Callback<List<Category>>() {
             @Override
             public void onSuccess(List<Category> result, boolean fromCache) {
                 categories.addAll(result);
-                binding.categorySpinner.setAdapter(adapterFor(categories));
+                if (pickerAdapter != null) {
+                    pickerAdapter.notifyDataSetChanged();
+                }
                 binding.offlineBanner.setVisibility(fromCache ? View.VISIBLE : View.GONE);
             }
 
@@ -161,17 +171,46 @@ public class SetupActivity extends AppCompatActivity {
         });
     }
 
-    private ArrayAdapter<Category> adapterFor(List<Category> list) {
-        ArrayAdapter<Category> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, list);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        return adapter;
+    private void selectCategory(Category category) {
+        selectedCategory = category;
+        binding.categoryValue.setText(category.name);
+        binding.categoryField.setContentDescription(getString(R.string.setup_category) + ": " + category.name);
+    }
+
+    private void showCategoryPicker() {
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        View sheet = getLayoutInflater().inflate(R.layout.sheet_categories, null);
+        RecyclerView list = sheet.findViewById(R.id.category_list);
+        list.setLayoutManager(new LinearLayoutManager(this));
+        pickerAdapter = new CategoryAdapter(categories, selectedCategory.id, c -> {
+            selectCategory(c);
+            dialog.dismiss();
+        });
+        list.setAdapter(pickerAdapter);
+        dialog.setOnDismissListener(d -> pickerAdapter = null);
+        list.getLayoutParams().height = (int) (getResources().getDisplayMetrics().heightPixels * 0.55f);
+        list.scrollToPosition(Math.max(0, categories.indexOf(selectedCategory)));
+        dialog.setContentView(sheet);
+        dialog.setOnShowListener(d -> {
+            FrameLayout container = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            if (container != null) {
+                container.setBackgroundColor(Color.TRANSPARENT);
+                BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(container);
+                behavior.setSkipCollapsed(true);
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setNavigationBarColor(getColor(R.color.paper));
+        }
+        dialog.show();
     }
 
     private void startGame() {
         if (starting) {
             return;
         }
-        Category category = (Category) binding.categorySpinner.getSelectedItem();
+        Category category = selectedCategory;
         RadioButton checked = binding.difficultyGroup.findViewById(binding.difficultyGroup.getCheckedRadioButtonId());
         String difficulty = checked == null ? "" : (String) checked.getTag();
         int amount = binding.amountSeek.getProgress() + MIN_AMOUNT;
