@@ -288,9 +288,23 @@ public class QuizActivity extends AppCompatActivity {
         finish();
     }
 
+    /** The clock stops while the dialog is open and resumes if the player keeps playing. */
     private void confirmQuit() {
+        cancelTimer();
+        handler.removeCallbacksAndMessages(null);
         Dialogs.confirm(this, R.string.quit_title, R.string.quit_message,
-                R.string.quit_confirm, this::finish, R.string.quit_cancel);
+                R.string.quit_confirm, this::finish, R.string.quit_cancel, this::resumeAfterDialog);
+    }
+
+    private void resumeAfterDialog() {
+        if (isFinishing()) {
+            return;
+        }
+        if (!answered && timeLeftMs > 0) {
+            runTimer();
+        } else if (answered && advancePending) {
+            handler.postDelayed(this::next, 1500);
+        }
     }
 
     private String difficultyLabel(String d) {

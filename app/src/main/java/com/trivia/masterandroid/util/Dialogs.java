@@ -21,6 +21,12 @@ public final class Dialogs {
     /** titleRes may be 0 for a message-only dialog. */
     public static void confirm(Activity activity, int titleRes, int messageRes,
                                int positiveRes, Runnable onPositive, int negativeRes) {
+        confirm(activity, titleRes, messageRes, positiveRes, onPositive, negativeRes, null);
+    }
+
+    /** onNegative also runs when the dialog is dismissed with back or by touching outside. */
+    public static void confirm(Activity activity, int titleRes, int messageRes,
+                               int positiveRes, Runnable onPositive, int negativeRes, Runnable onNegative) {
         if (activity.isFinishing() || activity.isDestroyed()) {
             return;
         }
@@ -46,7 +52,12 @@ public final class Dialogs {
         });
         TextView negative = view.findViewById(R.id.dialog_negative);
         negative.setText(negativeRes);
-        negative.setOnClickListener(v -> dialog.dismiss());
+        negative.setOnClickListener(v -> dialog.cancel());
+        dialog.setOnCancelListener(d -> {
+            if (onNegative != null) {
+                onNegative.run();
+            }
+        });
 
         Window window = dialog.getWindow();
         if (window != null) {
