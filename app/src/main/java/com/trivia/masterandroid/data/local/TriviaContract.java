@@ -42,5 +42,13 @@ public final class TriviaContract {
         public static final String CORRECT = "correct";
         public static final String INCORRECT = "incorrect";
         public static final String CREATED_AT = "created_at";
+        /** 0 = never played; used to serve the least recently played questions first. */
+        public static final String LAST_PLAYED_AT = "last_played_at";
+    }
+
+    public static final class Categories implements BaseColumns {
+        public static final String TABLE = "categories";
+        public static final Uri CONTENT_URI = BASE_URI.buildUpon().appendPath(TABLE).build();
+        public static final String NAME = "name";
     }
 }

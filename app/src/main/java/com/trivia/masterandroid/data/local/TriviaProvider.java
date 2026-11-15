@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.trivia.masterandroid.data.local.TriviaContract.CachedQuestions;
+import com.trivia.masterandroid.data.local.TriviaContract.Categories;
 import com.trivia.masterandroid.data.local.TriviaContract.Matches;
 import com.trivia.masterandroid.data.local.TriviaContract.Players;
 
@@ -23,6 +24,7 @@ public class TriviaProvider extends ContentProvider {
     private static final int MATCHES = 3;
     private static final int MATCH_ID = 4;
     private static final int QUESTIONS = 5;
+    private static final int CATEGORIES = 6;
 
     private static final UriMatcher MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -32,6 +34,7 @@ public class TriviaProvider extends ContentProvider {
         MATCHER.addURI(TriviaContract.AUTHORITY, Matches.TABLE, MATCHES);
         MATCHER.addURI(TriviaContract.AUTHORITY, Matches.TABLE + "/#", MATCH_ID);
         MATCHER.addURI(TriviaContract.AUTHORITY, CachedQuestions.TABLE, QUESTIONS);
+        MATCHER.addURI(TriviaContract.AUTHORITY, Categories.TABLE, CATEGORIES);
     }
 
     private TriviaDbHelper helper;
@@ -139,6 +142,8 @@ public class TriviaProvider extends ContentProvider {
                 return Matches.TABLE;
             case QUESTIONS:
                 return CachedQuestions.TABLE;
+            case CATEGORIES:
+                return Categories.TABLE;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }

@@ -5,13 +5,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.trivia.masterandroid.data.local.TriviaContract.CachedQuestions;
+import com.trivia.masterandroid.data.local.TriviaContract.Categories;
 import com.trivia.masterandroid.data.local.TriviaContract.Matches;
 import com.trivia.masterandroid.data.local.TriviaContract.Players;
 
 public class TriviaDbHelper extends SQLiteOpenHelper {
 
     private static final String NAME = "trivia.db";
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
 
     public TriviaDbHelper(Context context) {
         super(context, NAME, null, VERSION);
@@ -42,15 +43,25 @@ public class TriviaDbHelper extends SQLiteOpenHelper {
                 + CachedQuestions.TEXT + " TEXT NOT NULL UNIQUE, "
                 + CachedQuestions.CORRECT + " TEXT NOT NULL, "
                 + CachedQuestions.INCORRECT + " TEXT NOT NULL, "
-                + CachedQuestions.CREATED_AT + " INTEGER NOT NULL)");
+                + CachedQuestions.CREATED_AT + " INTEGER NOT NULL, "
+                + CachedQuestions.LAST_PLAYED_AT + " INTEGER NOT NULL DEFAULT 0)");
+        createCategories(db);
     }
 
+    private void createCategories(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + Categories.TABLE + " ("
+                + Categories._ID + " INTEGER PRIMARY KEY, "
+                + Categories.NAME + " TEXT NOT NULL)");
+    }
+
+    /** Incremental migrations: the player history must survive app updates. */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + Matches.TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + CachedQuestions.TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + Players.TABLE);
-        onCreate(db);
+        if (oldVersion < 2) {
+            createCategories(db);
+            db.execSQL("ALTER TABLE " + CachedQuestions.TABLE + " ADD COLUMN "
+                    + CachedQuestions.LAST_PLAYED_AT + " INTEGER NOT NULL DEFAULT 0");
+        }
     }
 
     @Override
