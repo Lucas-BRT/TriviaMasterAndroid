@@ -56,18 +56,46 @@ public class TriviaRepository {
         });
     }
 
-    /** Falls back to a built-in list when the API cannot be reached. */
-    public void loadCategories(Callback<List<Category>> callback) {
+    /** Categories saved on the device; empty list when nothing was cached yet. */
+    public void cachedCategories(Callback<List<Category>> callback) {
+        AppExecutors.io(() -> {
+            List<Category> list = local.getCategories();
+            AppExecutors.main(() -> callback.onSuccess(list, true));
+        });
+    }
+
+    /** Downloads the categories and refreshes the local copy. */
+    public void refreshCategories(Callback<List<Category>> callback) {
         AppExecutors.io(() -> {
             try {
                 List<Category> list = new ArrayList<>();
                 for (CategoryDto dto : remote.fetchCategories()) {
                     list.add(new Category(dto.id, dto.name));
                 }
+                local.saveCategories(list);
                 AppExecutors.main(() -> callback.onSuccess(list, false));
             } catch (TriviaException e) {
-                AppExecutors.main(() -> callback.onSuccess(DefaultCategories.get(), true));
+                AppExecutors.main(() -> callback.onError(e));
             }
+        });
+    }
+
+    /** Built-in list, used only when there is no cache and no connection. */
+    public List<Category> fallbackCategories() {
+        return DefaultCategories.get();
+    }
+
+    /** Skips the network: used when the API is slow and the player prefers saved questions. */
+    public void loadQuestionsFromCache(GameSettings s, Callback<List<Question>> callback) {
+        AppExecutors.io(() -> {
+            List<Question> cached = local.getCachedQuestions(s.categoryId, s.difficulty, s.amount);
+            AppExecutors.main(() -> {
+                if (cached.isEmpty()) {
+                    callback.onError(new TriviaException(TriviaException.Type.NO_OFFLINE_DATA));
+                } else {
+                    callback.onSuccess(cached, true);
+                }
+            });
         });
     }
 

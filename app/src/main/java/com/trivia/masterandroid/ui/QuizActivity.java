@@ -49,6 +49,7 @@ public class QuizActivity extends AppCompatActivity {
     private final List<AnswerRecord> answers = new ArrayList<>();
     private final List<View> optionViews = new ArrayList<>();
     private final Handler handler = new Handler(Looper.getMainLooper());
+    private LocalDataSource local;
     private CountDownTimer timer;
     private int index;
     private int score;
@@ -71,6 +72,7 @@ public class QuizActivity extends AppCompatActivity {
         settings = (GameSettings) getIntent().getSerializableExtra(EXTRA_SETTINGS);
         questions = (List<Question>) getIntent().getSerializableExtra(EXTRA_QUESTIONS);
         offline = getIntent().getBooleanExtra(EXTRA_OFFLINE, false);
+        local = new LocalDataSource(this);
         if (settings == null || questions == null || questions.isEmpty()) {
             finish();
             return;
@@ -167,6 +169,7 @@ public class QuizActivity extends AppCompatActivity {
             correctCount++;
         }
         answers.add(new AnswerRecord(q.text, chosen, q.correctAnswer, correct, false, points));
+        AppExecutors.io(() -> local.markPlayed(q.text));
         reveal(q, chosen);
         String message = correct
                 ? getString(R.string.quiz_correct, points)
@@ -181,6 +184,7 @@ public class QuizActivity extends AppCompatActivity {
         answered = true;
         Question q = questions.get(index);
         answers.add(new AnswerRecord(q.text, null, q.correctAnswer, false, true, 0));
+        AppExecutors.io(() -> local.markPlayed(q.text));
         reveal(q, null);
         showFeedback(getString(R.string.quiz_timeout, q.correctAnswer), false);
         advancePending = true;
@@ -274,7 +278,6 @@ public class QuizActivity extends AppCompatActivity {
         m.score = score;
         m.offline = offline;
         m.playedAt = System.currentTimeMillis();
-        LocalDataSource local = new LocalDataSource(this);
         AppExecutors.io(() -> {
             if (m.playerId < 0) {
                 m.playerId = local.getOrCreatePlayer(m.playerName);
