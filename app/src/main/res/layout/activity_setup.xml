@@ -180,6 +180,18 @@
             android:text="@string/loading_slow" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_use_cached"
+            style="@style/Button.Primary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:layout_marginEnd="4dp"
+            android:alpha="0"
+            android:paddingHorizontal="32dp"
+            android:text="@string/btn_use_cached"
+            android:visibility="invisible" />
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_cancel_loading"
             style="@style/Button.Secondary"
             android:layout_width="wrap_content"
