@@ -20,6 +20,8 @@ public class PlayerActivity extends AppCompatActivity {
     public static final String EXTRA_NAME = "extra_player_name";
 
     private ActivityPlayerBinding binding;
+    private int secretTaps;
+    private long lastSecretTap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,16 @@ public class PlayerActivity extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         binding.nameInput.setText(prefs.getString(KEY_NAME, ""));
+
+        binding.headline.setOnClickListener(v -> {
+            long now = android.os.SystemClock.uptimeMillis();
+            secretTaps = now - lastSecretTap > 1500 ? 1 : secretTaps + 1;
+            lastSecretTap = now;
+            if (secretTaps >= 7) {
+                secretTaps = 0;
+                startActivity(new Intent(this, DevSettingsActivity.class));
+            }
+        });
 
         binding.btnHistory.setOnClickListener(v ->
                 startActivity(new Intent(this, HistoryActivity.class)));
