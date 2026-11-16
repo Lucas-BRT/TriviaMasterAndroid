@@ -25,6 +25,7 @@ import com.trivia.masterandroid.model.GameSettings;
 import com.trivia.masterandroid.model.MatchRecord;
 import com.trivia.masterandroid.model.Question;
 import com.trivia.masterandroid.util.AppExecutors;
+import com.trivia.masterandroid.util.DevSettings;
 import com.trivia.masterandroid.util.Dialogs;
 import com.trivia.masterandroid.util.ScoreCalculator;
 
@@ -37,7 +38,6 @@ public class QuizActivity extends AppCompatActivity {
     public static final String EXTRA_SETTINGS = "extra_settings";
     public static final String EXTRA_OFFLINE = "extra_offline";
 
-    private static final long LIMIT_MS = GameSettings.TIME_PER_QUESTION_SECONDS * 1000L;
     private static final long TIMEOUT_ADVANCE_MS = 2500;
     private static final String[] LETTERS = {"A", "B", "C", "D", "E", "F"};
 
@@ -50,6 +50,7 @@ public class QuizActivity extends AppCompatActivity {
     private final List<View> optionViews = new ArrayList<>();
     private final Handler handler = new Handler(Looper.getMainLooper());
     private LocalDataSource local;
+    private long limitMs;
     private CountDownTimer timer;
     private int index;
     private int score;
@@ -73,6 +74,7 @@ public class QuizActivity extends AppCompatActivity {
         questions = (List<Question>) getIntent().getSerializableExtra(EXTRA_QUESTIONS);
         offline = getIntent().getBooleanExtra(EXTRA_OFFLINE, false);
         local = new LocalDataSource(this);
+        limitMs = DevSettings.secondsPerQuestion(this) * 1000L;
         if (settings == null || questions == null || questions.isEmpty()) {
             finish();
             return;
@@ -116,7 +118,7 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void startTimer() {
-        timeLeftMs = LIMIT_MS;
+        timeLeftMs = limitMs;
         runTimer();
     }
 
@@ -141,7 +143,7 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void updateTimer() {
-        binding.timerBar.setProgress(timeLeftMs * 100f / LIMIT_MS);
+        binding.timerBar.setProgress(timeLeftMs * 100f / limitMs);
         int seconds = (int) Math.ceil(timeLeftMs / 1000.0);
         binding.timerText.setText(getString(R.string.quiz_seconds, seconds));
         boolean urgent = seconds <= 5;
@@ -163,7 +165,7 @@ public class QuizActivity extends AppCompatActivity {
         cancelTimer();
         Question q = questions.get(index);
         boolean correct = q.isCorrect(chosen);
-        int points = ScoreCalculator.points(q.difficulty, correct, timeLeftMs, LIMIT_MS);
+        int points = ScoreCalculator.points(q.difficulty, correct, timeLeftMs, limitMs);
         score += points;
         if (correct) {
             correctCount++;
@@ -224,7 +226,7 @@ public class QuizActivity extends AppCompatActivity {
         binding.feedbackBar.setVisibility(View.VISIBLE);
         binding.feedbackBar.animate().translationY(0).setDuration(240)
                 .setInterpolator(new DecelerateInterpolator()).start();
-        binding.feedbackBar.performHapticFeedback(correct
+        if (DevSettings.haptics(this)) binding.feedbackBar.performHapticFeedback(correct
                 ? (android.os.Build.VERSION.SDK_INT >= 30 ? HapticFeedbackConstants.CONFIRM : HapticFeedbackConstants.KEYBOARD_TAP)
                 : (android.os.Build.VERSION.SDK_INT >= 30 ? HapticFeedbackConstants.REJECT : HapticFeedbackConstants.LONG_PRESS));
     }

@@ -202,4 +202,12 @@ public class LocalDataSource {
         list.sort((a, b) -> Long.compare(b.lastActivity, a.lastActivity));
         return list;
     }
+
+    public void clearCachedQuestions() {
+        resolver.delete(CachedQuestions.CONTENT_URI, null, null);
+    }
+
+    public void clearMatches() {
+        resolver.delete(Matches.CONTENT_URI, null, null);
+    }
 }

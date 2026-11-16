@@ -29,6 +29,7 @@ import com.trivia.masterandroid.model.GameSettings;
 import com.trivia.masterandroid.model.Question;
 import com.trivia.masterandroid.receiver.NetworkReceiver;
 import com.trivia.masterandroid.util.AppExecutors;
+import com.trivia.masterandroid.util.DevSettings;
 import com.trivia.masterandroid.util.Dialogs;
 import com.trivia.masterandroid.util.ErrorMessages;
 
@@ -48,6 +49,7 @@ public class SetupActivity extends AppCompatActivity {
     private final List<Category> categories = new ArrayList<>();
     private Category selectedCategory;
     private CategoryAdapter pickerAdapter;
+    private GameSettings lastSettings;
     private String playerName;
     private long playerId = -1;
     private boolean starting;
@@ -66,7 +68,7 @@ public class SetupActivity extends AppCompatActivity {
 
         playerName = getIntent().getStringExtra(PlayerActivity.EXTRA_NAME);
         binding.greeting.setText(getString(R.string.setup_greeting, playerName));
-        binding.timeInfo.setText(getString(R.string.setup_time_info, GameSettings.TIME_PER_QUESTION_SECONDS));
+        binding.timeInfo.setText(getString(R.string.setup_time_info, DevSettings.secondsPerQuestion(this)));
 
         setupDifficulty();
         setupAmount();
@@ -150,25 +152,58 @@ public class SetupActivity extends AppCompatActivity {
         binding.amountValue.setText(getString(R.string.setup_amount_value, progress + MIN_AMOUNT));
     }
 
+    /** Saved categories show up instantly; the network only refreshes them in the background. */
     private void loadCategories() {
         categories.add(new Category(0, getString(R.string.category_any)));
         selectCategory(categories.get(0));
         binding.categoryField.setOnClickListener(v -> showCategoryPicker());
-        repository.loadCategories(new TriviaRepository.Callback<List<Category>>() {
+        repository.cachedCategories(new TriviaRepository.Callback<List<Category>>() {
             @Override
             public void onSuccess(List<Category> result, boolean fromCache) {
-                categories.addAll(result);
-                if (pickerAdapter != null) {
-                    pickerAdapter.notifyDataSetChanged();
+                if (!result.isEmpty()) {
+                    replaceCategories(result);
                 }
-                binding.offlineBanner.setVisibility(fromCache ? View.VISIBLE : View.GONE);
+                refreshCategories(result.isEmpty());
             }
 
             @Override
             public void onError(TriviaException error) {
-                binding.offlineBanner.setVisibility(View.VISIBLE);
+                refreshCategories(true);
             }
         });
+    }
+
+    private void refreshCategories(boolean noCache) {
+        repository.refreshCategories(new TriviaRepository.Callback<List<Category>>() {
+            @Override
+            public void onSuccess(List<Category> result, boolean fromCache) {
+                replaceCategories(result);
+            }
+
+            @Override
+            public void onError(TriviaException error) {
+                if (noCache) {
+                    replaceCategories(repository.fallbackCategories());
+                }
+            }
+        });
+    }
+
+    private void replaceCategories(List<Category> list) {
+        categories.clear();
+        categories.add(new Category(0, getString(R.string.category_any)));
+        categories.addAll(list);
+        int keep = selectedCategory == null ? 0 : selectedCategory.id;
+        Category match = categories.get(0);
+        for (Category c : categories) {
+            if (c.id == keep) {
+                match = c;
+            }
+        }
+        selectCategory(match);
+        if (pickerAdapter != null) {
+            pickerAdapter.notifyDataSetChanged();
+        }
     }
 
     private void selectCategory(Category category) {
@@ -214,11 +249,15 @@ public class SetupActivity extends AppCompatActivity {
         RadioButton checked = binding.difficultyGroup.findViewById(binding.difficultyGroup.getCheckedRadioButtonId());
         String difficulty = checked == null ? "" : (String) checked.getTag();
         int amount = binding.amountSeek.getProgress() + MIN_AMOUNT;
-        GameSettings settings = new GameSettings(playerName, playerId, category.id, category.name, difficulty, amount);
+        lastSettings = new GameSettings(playerName, playerId, category.id, category.name, difficulty, amount);
+        load(DevSettings.forceOffline(this));
+    }
 
+    private void load(boolean cacheOnly) {
+        final GameSettings settings = lastSettings;
         setLoading(true);
         final int token = ++loadToken;
-        repository.loadQuestions(settings, new TriviaRepository.Callback<List<Question>>() {
+        TriviaRepository.Callback<List<Question>> callback = new TriviaRepository.Callback<List<Question>>() {
             @Override
             public void onSuccess(List<Question> result, boolean fromCache) {
                 if (token != loadToken || isFinishing()) {
@@ -241,7 +280,12 @@ public class SetupActivity extends AppCompatActivity {
                 Dialogs.confirm(SetupActivity.this, 0, ErrorMessages.of(error),
                         R.string.btn_retry, () -> startGame(), R.string.btn_cancel);
             }
-        });
+        };
+        if (cacheOnly) {
+            repository.loadQuestionsFromCache(settings, callback);
+        } else {
+            repository.loadQuestions(settings, callback);
+        }
     }
 
     private void setLoading(boolean loading) {
