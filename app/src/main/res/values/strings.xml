@@ -76,5 +76,20 @@
     <string name="result_msg_try">Na próxima vai melhor.</string>
     <string name="setup_category_pick">Escolha o tema</string>
     <string name="state_selected">Selecionado</string>
-    <string name="btn_use_cached">Usar perguntas salvas</string>
+    <string name="dev_title">Opções de desenvolvedor</string>
+    <string name="dev_warning">Ferramentas de teste. Não aparecem para quem joga.</string>
+    <string name="dev_force_offline">Forçar modo offline</string>
+    <string name="dev_force_offline_desc">Usa só as perguntas salvas no aparelho, sem chamar a API.</string>
+    <string name="dev_haptics">Vibração</string>
+    <string name="dev_haptics_desc">Vibra ao responder uma pergunta.</string>
+    <string name="dev_time">Tempo por pergunta</string>
+    <string name="dev_cache">Perguntas salvas</string>
+    <string name="dev_cache_count">%1$d perguntas no cache</string>
+    <string name="dev_clear">Limpar</string>
+    <string name="dev_history">Histórico de partidas</string>
+    <string name="dev_history_desc">Apaga todas as partidas salvas. Os jogadores continuam.</string>
+    <string name="dev_erase">Apagar</string>
+    <string name="dev_confirm_cache">Apagar todas as perguntas salvas? Sem rede, não será possível jogar até baixar novas.</string>
+    <string name="dev_confirm_history">Apagar todo o histórico de partidas?</string>
+    <string name="dev_unlocked">Opções de desenvolvedor</string>
 </resources>
