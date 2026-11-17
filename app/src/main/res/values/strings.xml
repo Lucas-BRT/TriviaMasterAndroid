@@ -92,4 +92,14 @@
     <string name="dev_confirm_cache">Apagar todas as perguntas salvas? Sem rede, não será possível jogar até baixar novas.</string>
     <string name="dev_confirm_history">Apagar todo o histórico de partidas?</string>
     <string name="dev_unlocked">Opções de desenvolvedor</string>
+    <string name="playing_as">Jogando como</string>
+    <string name="continue_as">Continuar como %1$s</string>
+    <string name="switch_user">Trocar de usuário</string>
+    <string name="choose_player">Quem vai jogar?</string>
+    <string name="new_player">Novo jogador</string>
+    <string name="btn_create_player">Criar e jogar</string>
+    <string name="player_stats">%1$d partidas · melhor %2$d</string>
+    <string name="player_stats_none">Ainda sem partidas</string>
+    <string name="history_filter_all">Todos</string>
+    <string name="history_empty_player">Nenhuma partida de %1$s ainda</string>
 </resources>

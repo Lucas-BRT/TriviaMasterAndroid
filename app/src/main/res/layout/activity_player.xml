@@ -32,50 +32,113 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <TextView
-            style="@style/Text.Label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:labelFor="@id/name_input"
-            android:text="@string/player_label" />
-
-        <EditText
-            android:id="@+id/name_input"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="8dp"
-            android:autofillHints="name"
-            android:background="@drawable/bg_input"
-            android:hint="@string/player_hint"
-            android:imeOptions="actionDone"
-            android:inputType="textPersonName|textCapWords"
-            android:maxLength="20"
-            android:maxLines="1"
-            android:paddingHorizontal="16dp"
-            android:textColor="@color/ink"
-            android:textColorHint="@color/ink_soft"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/name_error"
+        <LinearLayout
+            android:id="@+id/continue_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:drawablePadding="6dp"
-            android:text="@string/player_error_empty"
-            android:textColor="@color/wrong"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
+            android:orientation="vertical"
+            android:visibility="gone">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_play"
-            style="@style/Button.Primary"
+            <TextView
+                style="@style/Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/playing_as" />
+
+            <TextView
+                android:id="@+id/current_name"
+                style="@style/Text.Display"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textSize="36sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_continue"
+                style="@style/Button.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="4dp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_switch"
+                style="@style/Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="4dp"
+                android:text="@string/switch_user" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/chooser_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="4dp"
-            android:text="@string/btn_play" />
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/players_label"
+                style="@style/Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/choose_player" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/players"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false" />
+
+            <TextView
+                style="@style/Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:labelFor="@id/name_input"
+                android:text="@string/new_player" />
+
+            <EditText
+                android:id="@+id/name_input"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="8dp"
+                android:autofillHints="name"
+                android:background="@drawable/bg_input"
+                android:hint="@string/player_hint"
+                android:imeOptions="actionDone"
+                android:inputType="textPersonName|textCapWords"
+                android:maxLength="20"
+                android:maxLines="1"
+                android:paddingHorizontal="16dp"
+                android:textColor="@color/ink"
+                android:textColorHint="@color/ink_soft"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/name_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/player_error_empty"
+                android:textColor="@color/wrong"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_create"
+                style="@style/Button.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="4dp"
+                android:text="@string/btn_create_player" />
+        </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_history"
