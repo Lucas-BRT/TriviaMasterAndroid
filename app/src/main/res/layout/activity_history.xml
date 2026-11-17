@@ -14,6 +14,14 @@
         android:text="@string/history_title"
         android:textSize="40sp" />
 
+    <RadioGroup
+        android:id="@+id/filter_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/stats"
         android:layout_width="match_parent"
@@ -99,6 +107,7 @@
         android:visibility="gone">
 
         <TextView
+            android:id="@+id/empty_title"
             style="@style/Text.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
