@@ -30,6 +30,8 @@ public class DevSettingsActivity extends AppCompatActivity {
 
         binding.switchOffline.setChecked(DevSettings.forceOffline(this));
         binding.switchOffline.setOnCheckedChangeListener((b, on) -> DevSettings.setForceOffline(this, on));
+        binding.switchSound.setChecked(DevSettings.sound(this));
+        binding.switchSound.setOnCheckedChangeListener((b, on) -> DevSettings.setSound(this, on));
         binding.switchHaptics.setChecked(DevSettings.haptics(this));
         binding.switchHaptics.setOnCheckedChangeListener((b, on) -> DevSettings.setHaptics(this, on));
 

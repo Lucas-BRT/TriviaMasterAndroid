@@ -102,4 +102,6 @@
     <string name="player_stats_none">Ainda sem partidas</string>
     <string name="history_filter_all">Todos</string>
     <string name="history_empty_player">Nenhuma partida de %1$s ainda</string>
+    <string name="dev_sound">Efeitos sonoros</string>
+    <string name="dev_sound_desc">Toca sons ao acertar, errar e terminar a partida.</string>
 </resources>

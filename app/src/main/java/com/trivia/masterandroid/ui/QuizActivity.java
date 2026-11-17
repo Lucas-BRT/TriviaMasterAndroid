@@ -27,6 +27,7 @@ import com.trivia.masterandroid.model.Question;
 import com.trivia.masterandroid.util.AppExecutors;
 import com.trivia.masterandroid.util.DevSettings;
 import com.trivia.masterandroid.util.Dialogs;
+import com.trivia.masterandroid.util.Sfx;
 import com.trivia.masterandroid.util.ScoreCalculator;
 
 import java.util.ArrayList;
@@ -87,6 +88,7 @@ public class QuizActivity extends AppCompatActivity {
                 confirmQuit();
             }
         });
+        Sfx.preload(this);
         showQuestion();
     }
 
@@ -149,6 +151,7 @@ public class QuizActivity extends AppCompatActivity {
         boolean urgent = seconds <= 5;
         binding.timerBar.setProgressColor(getColor(urgent ? R.color.wrong : R.color.blue));
         if (urgent && seconds != lastSecond && seconds > 0 && !answered) {
+            Sfx.play(this, Sfx.Sound.TICK);
             binding.timerText.animate().cancel();
             binding.timerText.animate().scaleX(1.18f).scaleY(1.18f).setDuration(110)
                     .withEndAction(() -> binding.timerText.animate().scaleX(1f).scaleY(1f).setDuration(160).start())
@@ -173,6 +176,7 @@ public class QuizActivity extends AppCompatActivity {
         answers.add(new AnswerRecord(q.text, chosen, q.correctAnswer, correct, false, points));
         AppExecutors.io(() -> local.markPlayed(q.text));
         reveal(q, chosen);
+        Sfx.play(this, correct ? Sfx.Sound.CORRECT : Sfx.Sound.WRONG);
         String message = correct
                 ? getString(R.string.quiz_correct, points)
                 : getString(R.string.quiz_wrong, q.correctAnswer);
@@ -188,6 +192,7 @@ public class QuizActivity extends AppCompatActivity {
         answers.add(new AnswerRecord(q.text, null, q.correctAnswer, false, true, 0));
         AppExecutors.io(() -> local.markPlayed(q.text));
         reveal(q, null);
+        Sfx.play(this, Sfx.Sound.TIMEOUT);
         showFeedback(getString(R.string.quiz_timeout, q.correctAnswer), false);
         advancePending = true;
         handler.postDelayed(this::next, TIMEOUT_ADVANCE_MS);

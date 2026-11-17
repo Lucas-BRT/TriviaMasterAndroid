@@ -13,6 +13,7 @@ public final class DevSettings {
     private static final String PREFS = "dev_settings";
     private static final String KEY_FORCE_OFFLINE = "force_offline";
     private static final String KEY_HAPTICS = "haptics";
+    private static final String KEY_SOUND = "sound";
     private static final String KEY_SECONDS = "seconds_per_question";
 
     private DevSettings() {
@@ -36,6 +37,14 @@ public final class DevSettings {
 
     public static void setHaptics(Context c, boolean value) {
         prefs(c).edit().putBoolean(KEY_HAPTICS, value).apply();
+    }
+
+    public static boolean sound(Context c) {
+        return prefs(c).getBoolean(KEY_SOUND, true);
+    }
+
+    public static void setSound(Context c, boolean value) {
+        prefs(c).edit().putBoolean(KEY_SOUND, value).apply();
     }
 
     /** Seconds per question, always inside the 10-60 range required by the assignment. */
